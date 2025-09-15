@@ -1,0 +1,400 @@
+stages:
+  - build
+  - deploy
+  - test
+  - deploy-prod
+  - test-prod
+  - destroy-rc
+  - approve-destroy-prod
+  - destroy-prod
+
+variables:
+  GIT_DEPTH: 1
+
+.job_template: &tag-config
+  tags:
+    - shell-linux
+
+build:dev:
+  stage: build
+  <<: *tag-config
+  variables:
+    CI_DEBUG_TRACE: "false"
+  only:
+    - /^dev_.*$/
+  except:
+    - schedules
+    - master
+    - api
+  script:
+    - build_image
+
+deploy:dev:
+  stage: deploy
+  environment:
+    name: ${CI_COMMIT_REF_SLUG}
+    url: "https://${CI_COMMIT_REF_SLUG}-${CI_PROJECT_ID}.${DEV_DOMAIN}${PRODUCTION_PATH}"
+    on_stop: destroy:dev
+  variables:
+    CI_DEBUG_TRACE: "false"
+  <<: *tag-config
+  only:
+    - /^dev_.*$/
+  except:
+    - schedules
+    - master
+    - api
+  script:
+    - deploy_image
+
+test:dev:
+  stage: test
+  environment:
+    name: ${CI_COMMIT_REF_SLUG}
+    on_stop: destroy:dev
+  image: hub.synergy.ru/qa-test-land:app-last
+  variables:
+    CI_DEBUG_TRACE: "false"
+  tags:
+    - docker
+  only:
+    - /^dev_.*$/
+  except:
+    - schedules
+    - master
+    - api
+  artifacts:
+    reports:
+      junit: reports-junit.xml
+    expire_in: 1 yrs
+    when: always
+  script:
+    - test_lp
+
+destroy:dev:
+  stage: test
+  environment:
+    name: ${CI_COMMIT_REF_SLUG}
+    action: stop
+  variables:
+    CI_DEBUG_TRACE: "false"
+    GIT_STRATEGY: none
+  only:
+    - /^dev_.*$/
+  except:
+    - schedules
+    - master
+    - api
+  <<: *tag-config
+  when: manual
+  script:
+    - destroy_env
+
+build:rc:
+  stage: build
+  <<: *tag-config
+  variables:
+    CI_DEBUG_TRACE: "false"
+  only:
+    - master
+  except:
+    - schedules
+    - api
+  script:
+    - build_image
+
+deploy:rc:
+  stage: deploy
+  environment:
+    name: "rc"
+    url: "https://rc-${CI_PROJECT_ID}.${DEV_DOMAIN}${PRODUCTION_PATH}"
+    on_stop: destroy:rc
+  variables:
+    CI_DEBUG_TRACE: "false"
+  only:
+    - master
+  except:
+    - schedules
+    - api
+  <<: *tag-config
+  script:
+    - deploy_image
+
+test:rc:
+  stage: test
+  environment:
+    name: "rc"
+    on_stop: destroy:rc
+  image: hub.synergy.ru/qa-test-land:app-last
+  tags:
+    - docker
+  only:
+    - master
+  except:
+    - schedules
+    - api
+  artifacts:
+    reports:
+      junit: reports-junit.xml
+    expire_in: 1 yrs
+    when: always
+  script:
+    - test_lp
+
+destroy:rc:
+  stage: test
+  environment:
+    name: "rc"
+    action: stop
+  variables:
+    CI_DEBUG_TRACE: "false"
+    GIT_STRATEGY: none
+  only:
+    - master
+  except:
+    - schedules
+    - api
+  <<: *tag-config
+  when: manual
+  script:
+    - destroy_env
+
+deploy:prod:
+  stage: deploy-prod
+  environment:
+    name: "production"
+    url: "${PRODUCTION_URL}${PRODUCTION_PATH}"
+  variables:
+    CI_DEBUG_TRACE: "false"
+  dependencies:
+    - deploy:rc
+  only:
+    - master
+  except:
+    - schedules
+    - api
+  <<: *tag-config
+  allow_failure: false
+  when: manual
+  script:
+    - deploy_image
+
+test:prod:
+  stage: test-prod
+  environment:
+    name: "production"
+  image: hub.synergy.ru/qa-test-land:app-last
+  only:
+    - master
+  except:
+    - schedules
+    - api
+  tags:
+    - docker
+  artifacts:
+    reports:
+      junit: reports-junit.xml
+    expire_in: 1 yrs
+    when: always
+  script:
+    - test_lp
+
+destroy:rc:afterprod:
+  stage: destroy-rc
+  environment:
+    name: "rc"
+    action: stop
+  dependencies:
+    - test:prod
+  variables:
+    CI_DEBUG_TRACE: "false"
+    GIT_STRATEGY: none
+  only:
+    - master
+  except:
+    - schedules
+    - api
+  <<: *tag-config
+  script:
+    - destroy_env
+
+approve:destroy:prod:
+  stage: approve-destroy-prod
+  variables:
+    CI_DEBUG_TRACE: "false"
+  only:
+    - master
+  except:
+    - schedules
+    - api
+  <<: *tag-config
+  when: manual
+  script:
+    - approve_destroy_prod
+  artifacts:
+    paths:
+      - .ci_status/
+
+destroy:prod:
+  stage: destroy-prod
+  environment:
+    name: "production"
+    action: stop
+  variables:
+    CI_DEBUG_TRACE: "false"
+  only:
+    - master
+  except:
+    - schedules
+    - api
+  <<: *tag-config
+  when: manual
+  script:
+    - if [ ! -f ".ci_status/approved" ]; then echo "Отсутствует разрешение на удаление продуктивного окружения"; exit 1; fi
+    - destroy_env
+
+destroy:prod:api:
+  stage: destroy-prod
+  <<: *tag-config
+  variables:
+    CI_DEBUG_TRACE: "false"
+    CI_ENVIRONMENT_NAME: "production"
+  only:
+    refs:
+      - api
+    variables: 
+      - $API_RUN_VARIABLE == "DELETE_PRODUCTION"
+  except:
+    - schedules
+  script:
+    - export CI_ENVIRONMENT_SLUG="production"
+    - export CI_ENVIRONMENT_NAME="production"
+    - destroy_env
+
+# ---------------------------------------------------------------------------
+.auto_devops: &auto_devops |
+  # Auto DevOps variables and functions
+  
+  export WERF_RELEASES_HISTORY_MAX=2
+  export WERF_ENABLE_PROCESS_EXTERMINATOR=1
+  export WERF_SYNCHRONIZATION=:local
+
+  export WERF_REPO="${REGISTRY_NAME_DEV}/${CI_PROJECT_PATH_SLUG}"
+  export KUBE_CONTEXT="${KUBE_CONTEXT_DEV}"
+
+  export TEST_LAND_IMAGE="${REGISTRY_NAME_DEV}/qa-test-land/app:master"
+
+  export DEVS=$( echo "${CI_COMMIT_REF_SLUG}" | grep "dev-" | wc -l)
+  if [ ${DEVS} -eq 1 ]
+  then 
+    export ENV_NAME="dev"
+    export APP_URL="https://${CI_COMMIT_REF_SLUG}-${CI_PROJECT_ID}.${DEV_DOMAIN}"
+    export APP_NAMESPACE="${CI_COMMIT_REF_SLUG}-${CI_PROJECT_PATH_SLUG}"
+  else
+    if [ "${CI_ENVIRONMENT_NAME}" == "production" ]
+    then
+      if [ "${PRODUCTION_URL}" == "" ]
+      then
+        echo "PRODUCTION_URL not set!"
+        exit 1
+      fi
+      export ENV_NAME="prod"
+      export KUBE_CONTEXT="${KUBE_CONTEXT_PROD}"
+      export APP_NAMESPACE="${CI_PROJECT_PATH_SLUG}"
+      export APP_URL="${PRODUCTION_URL}"
+      export WERF_REPO="${REGISTRY_NAME_PROD}/${CI_PROJECT_PATH_SLUG}"
+    else
+      export ENV_NAME="rc"
+      export APP_URL="https://rc-${CI_PROJECT_ID}.${DEV_DOMAIN}"
+      export APP_NAMESPACE="rc-${CI_PROJECT_PATH_SLUG}"
+    fi
+  fi
+
+  export WERF_KUBE_CONTEXT="${KUBE_CONTEXT}"
+
+  export APP_NAMESPACE=$( echo ${APP_NAMESPACE} | cut -c -52 | sed 's/\-$//' )
+
+  export DAST_WEBSITE="${APP_URL}"
+
+  build_image() {
+    werf version; pwd; set -x
+    
+    source $(werf ci-env gitlab --as-file)
+    werf build
+  }
+
+  destroy_env() {
+    werf version; pwd; set -x
+
+    source $(werf ci-env gitlab --as-file)
+    werf dismiss --namespace ${APP_NAMESPACE} --release ${APP_NAMESPACE} --with-namespace=true
+  }
+
+  cleanup() {
+    werf version; pwd; set -x
+
+    source $(werf ci-env gitlab --as-file)
+    werf cleanup
+  }
+
+  deploy_image() {
+    werf version; pwd; set -x
+
+    kubectl get ns ${APP_NAMESPACE} --context="${KUBE_CONTEXT}" || kubectl create namespace ${APP_NAMESPACE} --context="${KUBE_CONTEXT}"
+
+    kubectl get secret docker-registry -n kube-system -o json --context="${KUBE_CONTEXT}" |
+      jq ".metadata.namespace = \"${APP_NAMESPACE}\"|
+      del(.metadata.annotations,.metadata.creationTimestamp,.metadata.resourceVersion,.metadata.selfLink,.metadata.uid)" |
+      kubectl apply -f - --context="${KUBE_CONTEXT}"
+
+    kubectl get secret docker-registry-dev -n kube-system -o json --context="${KUBE_CONTEXT}" |
+      jq ".metadata.namespace = \"${APP_NAMESPACE}\"|
+      del(.metadata.annotations,.metadata.creationTimestamp,.metadata.resourceVersion,.metadata.selfLink,.metadata.uid)" |
+      kubectl apply -f - --context="${KUBE_CONTEXT}"
+
+    if [ "${ENV_NAME}" == "prod" ]
+    then
+      build_image
+    fi    
+
+    source $(werf ci-env gitlab --as-file)
+    werf converge \
+      --auto-rollback=true \
+      --skip-build \
+      --namespace ${APP_NAMESPACE} \
+      --release ${APP_NAMESPACE} \
+      --set "global.env=${CI_ENVIRONMENT_SLUG}" \
+      --set "global.ci_url=$(echo ${APP_URL} | cut -d / -f 3)" \
+      --set "global.env_name=${ENV_NAME}" \
+      --set "global.ci_path=${PRODUCTION_PATH}" \
+      --set "global.mon_probe=${MON_PROBE}" \
+      --set "global.mon_code=${MON_CODE}" \
+      --set "global.www_redirect=${WWW_REDIRECT}" \
+      --set "global.ssl_exp=${SSL_EXP}" \
+      --set "global.lifetime=${LIFETIME}" \
+      --set "global.allow_eval=${ALLOW_EVAL}" \
+      --set "global.werf_version=${WERF_VERSION}" \
+      --add-annotation "synergy.ru/gitlab.url=${CI_PROJECT_URL}" \
+      --add-annotation "synergy.ru/gitlab.id=${CI_PROJECT_ID}"
+
+    cleanup
+  }
+
+  test_lp() {
+    if [ "${SKIP_TEST}" == "true" ]
+    then
+      echo "Test skip"
+    else
+      export CUR_DIR=$( pwd )
+      cd /var/app
+      pytest --junitxml=${CUR_DIR}/reports-junit.xml --pyargs testland --color=yes --land-url "${APP_URL}${PRODUCTION_PATH}" 
+    fi
+  }
+
+  approve_destroy_prod() {
+    mkdir -p .ci_status
+    echo $(date +%s) > .ci_status/approved
+  }
+
+before_script:
+  - *auto_devops

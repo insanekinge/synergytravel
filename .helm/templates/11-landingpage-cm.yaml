@@ -1,0 +1,689 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: php-fpm-config
+data:
+  php.ini: |
+    [PHP]
+    engine = On
+    short_open_tag = Off
+    precision = 14
+    output_buffering = 4096
+    zlib.output_compression = Off
+    implicit_flush = Off
+    unserialize_callback_func =
+    serialize_precision = -1
+    disable_functions = error_reporting,ini_set
+    disable_classes =
+    zend.enable_gc = On
+    expose_php = Off
+    max_execution_time = 30
+    max_input_time = 60
+    memory_limit = 128M
+    {{- if eq .Values.global.env_name "prod" }}
+    error_reporting = E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT
+    display_errors = Off
+    display_startup_errors = Off
+    {{- else }}
+    error_reporting = E_ALL
+    display_errors = On
+    display_startup_errors = On
+    {{- end }}
+    log_errors = On
+    log_errors_max_len = 1024
+    ignore_repeated_errors = Off
+    ignore_repeated_source = Off
+    report_memleaks = On
+    html_errors = On
+    variables_order = "GPCS"
+    request_order = "GP"
+    register_argc_argv = Off
+    auto_globals_jit = On
+    post_max_size = 8M
+    auto_prepend_file =
+    auto_append_file =
+    default_mimetype = "text/html"
+    default_charset = "UTF-8"
+    doc_root =
+    user_dir =
+    enable_dl = Off
+    file_uploads = On
+    upload_max_filesize = 2M
+    max_file_uploads = 20
+    allow_url_fopen = On
+    allow_url_include = Off
+    default_socket_timeout = 60
+    [CLI Server]
+    cli_server.color = On
+    [Date]
+    date.timezone = Europe/Moscow
+    [Pdo_mysql]
+    pdo_mysql.cache_size = 2000
+    pdo_mysql.default_socket=
+    [mail function]
+    SMTP = localhost
+    smtp_port = 25
+    mail.add_x_header = Off
+    [ODBC]
+    odbc.allow_persistent = On
+    odbc.check_persistent = On
+    odbc.max_persistent = -1
+    odbc.max_links = -1
+    odbc.defaultlrl = 4096
+    odbc.defaultbinmode = 1
+    [Interbase]
+    ibase.allow_persistent = 1
+    ibase.max_persistent = -1
+    ibase.max_links = -1
+    ibase.timestampformat = "%Y-%m-%d %H:%M:%S"
+    ibase.dateformat = "%Y-%m-%d"
+    ibase.timeformat = "%H:%M:%S"
+    [MySQLi]
+    mysqli.max_persistent = -1
+    mysqli.allow_persistent = On
+    mysqli.max_links = -1
+    mysqli.cache_size = 2000
+    mysqli.default_port = 3306
+    mysqli.default_socket =
+    mysqli.default_host =
+    mysqli.default_user =
+    mysqli.default_pw =
+    mysqli.reconnect = Off
+    [mysqlnd]
+    mysqlnd.collect_statistics = On
+    mysqlnd.collect_memory_statistics = Off
+    [PostgreSQL]
+    pgsql.allow_persistent = On
+    pgsql.auto_reset_persistent = Off
+    pgsql.max_persistent = -1
+    pgsql.max_links = -1
+    pgsql.ignore_notice = 0
+    pgsql.log_notice = 0
+    [bcmath]
+    bcmath.scale = 0
+    [Session]
+    session.save_handler = files
+    session.use_strict_mode = 0
+    session.use_cookies = 1
+    session.cookie_secure = 1
+    session.use_only_cookies = 1
+    session.name = PHPSESSID
+    session.auto_start = 0
+    session.cookie_lifetime = 0
+    session.cookie_path = /
+    session.cookie_domain =
+    session.cookie_httponly = 1
+    session.serialize_handler = php
+    session.gc_probability = 1
+    session.gc_divisor = 1000
+    session.gc_maxlifetime = 1440
+    session.referer_check =
+    session.cache_limiter = nocache
+    session.cache_expire = 180
+    session.use_trans_sid = 0
+    session.sid_length = 26
+    session.trans_sid_tags = "a=href,area=href,frame=src,form="
+    session.sid_bits_per_character = 5
+    [Assertion]
+    zend.assertions = -1
+    [Tidy]
+    tidy.clean_output = Off
+    [soap]
+    soap.wsdl_cache_enabled=1
+    soap.wsdl_cache_dir="/tmp"
+    soap.wsdl_cache_ttl=86400
+    soap.wsdl_cache_limit = 5
+    [ldap]
+    ldap.max_links = -1
+    [dba]
+    [opcache]
+    [curl]
+    [openssl]
+    [sysvshm]
+    [COM]
+    [mbstring]
+    [gd]
+    [exif]
+    [browscap]
+    [filter]
+    [iconv]
+    [intl]
+    [sqlite3]
+    [Pcre]
+    [Pdo]
+    [OCI8]
+    [Phar]
+  php-fpm.conf: |
+    [global]
+    error_log = /proc/self/fd/2
+    daemonize = no
+    [www]
+    access.log = /proc/self/fd/2
+    clear_env = no
+    catch_workers_output = yes
+    user = www-data
+    group = www-data
+    listen = 127.0.0.1:9000
+    pm = dynamic
+    pm.max_children = 50
+    pm.start_servers = 2
+    pm.min_spare_servers = 1
+    pm.max_spare_servers = 3
+    pm.status_path = /status
+    ping.path = /ping
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+data:
+  fastcgi_params: |
+    fastcgi_param  QUERY_STRING       $query_string;
+    fastcgi_param  REQUEST_METHOD     $request_method;
+    fastcgi_param  CONTENT_TYPE       $content_type;
+    fastcgi_param  CONTENT_LENGTH     $content_length;
+
+    fastcgi_param  SCRIPT_NAME        $fastcgi_script_name;
+    fastcgi_param  REQUEST_URI        $request_uri;
+    fastcgi_param  DOCUMENT_URI       $document_uri;
+    fastcgi_param  DOCUMENT_ROOT      $document_root;
+    fastcgi_param  SERVER_PROTOCOL    $server_protocol;
+    fastcgi_param  REQUEST_SCHEME     $scheme;
+    fastcgi_param  HTTPS              $https if_not_empty;
+
+    fastcgi_param  GATEWAY_INTERFACE  CGI/1.1;
+    fastcgi_param  SERVER_SOFTWARE    nginx/$nginx_version;
+
+    fastcgi_param  REMOTE_ADDR        $remote_addr;
+    fastcgi_param  REMOTE_PORT        $remote_port;
+    fastcgi_param  SERVER_ADDR        $server_addr;
+    fastcgi_param  SERVER_PORT        $server_port;
+    fastcgi_param  SERVER_NAME        $server_name;
+
+    # PHP only, required if PHP was built with --enable-force-cgi-redirect
+    fastcgi_param  REDIRECT_STATUS    200;
+  mime.types: |
+    types {
+
+      # Data interchange
+
+        application/atom+xml                  atom;
+        application/json                      json map topojson;
+        application/ld+json                   jsonld;
+        application/rss+xml                   rss;
+        # Normalize to standard type.
+        # https://tools.ietf.org/html/rfc7946#section-12
+        application/geo+json                  geojson;
+        application/xml                       xml;
+        # Normalize to standard type.
+        # https://tools.ietf.org/html/rfc3870#section-2
+        application/rdf+xml                   rdf;
+
+
+      # JavaScript
+
+        # Servers should use text/javascript for JavaScript resources.
+        # https://html.spec.whatwg.org/multipage/scripting.html#scriptingLanguages
+        text/javascript                       js mjs;
+        application/wasm                      wasm;
+
+
+      # Manifest files
+
+        application/manifest+json             webmanifest;
+        application/x-web-app-manifest+json   webapp;
+        text/cache-manifest                   appcache;
+
+
+      # Media files
+
+        audio/midi                            mid midi kar;
+        audio/mp4                             aac f4a f4b m4a;
+        audio/mpeg                            mp3;
+        audio/ogg                             oga ogg opus;
+        audio/x-realaudio                     ra;
+        audio/x-wav                           wav;
+        audio/x-matroska                      mka;
+        image/bmp                             bmp;
+        image/gif                             gif;
+        image/jpeg                            jpeg jpg;
+        image/jxr                             jxr hdp wdp;
+        image/png                             png;
+        image/svg+xml                         svg svgz;
+        image/tiff                            tif tiff;
+        image/vnd.wap.wbmp                    wbmp;
+        image/webp                            webp;
+        image/x-jng                           jng;
+        video/3gpp                            3gp 3gpp;
+        video/mp4                             f4p f4v m4v mp4;
+        video/mpeg                            mpeg mpg;
+        video/ogg                             ogv;
+        video/quicktime                       mov;
+        video/webm                            webm;
+        video/x-flv                           flv;
+        video/x-mng                           mng;
+        video/x-ms-asf                        asf asx;
+        video/x-ms-wmv                        wmv;
+        video/x-msvideo                       avi;
+        video/x-matroska                      mkv mk3d;
+
+        # Serving `.ico` image files with a different media type
+        # prevents Internet Explorer from displaying then as images:
+        # https://github.com/h5bp/html5-boilerplate/commit/37b5fec090d00f38de64b591bcddcb205aadf8ee
+
+        image/x-icon                          cur ico;
+
+
+      # Microsoft Office
+
+        application/msword                                                         doc;
+        application/vnd.ms-excel                                                   xls;
+        application/vnd.ms-powerpoint                                              ppt;
+        application/vnd.openxmlformats-officedocument.wordprocessingml.document    docx;
+        application/vnd.openxmlformats-officedocument.spreadsheetml.sheet          xlsx;
+        application/vnd.openxmlformats-officedocument.presentationml.presentation  pptx;
+
+
+      # Web fonts
+
+        font/woff                             woff;
+        font/woff2                            woff2;
+        application/vnd.ms-fontobject         eot;
+        font/ttf                              ttf;
+        font/collection                       ttc;
+        font/otf                              otf;
+
+
+      # Other
+
+        application/java-archive              ear jar war;
+        application/mac-binhex40              hqx;
+        application/octet-stream              bin deb dll dmg exe img iso msi msm msp safariextz;
+        application/pdf                       pdf;
+        application/postscript                ai eps ps;
+        application/rtf                       rtf;
+        application/vnd.google-earth.kml+xml  kml;
+        application/vnd.google-earth.kmz      kmz;
+        application/vnd.wap.wmlc              wmlc;
+        application/x-7z-compressed           7z;
+        application/x-bb-appworld             bbaw;
+        application/x-bittorrent              torrent;
+        application/x-chrome-extension        crx;
+        application/x-cocoa                   cco;
+        application/x-java-archive-diff       jardiff;
+        application/x-java-jnlp-file          jnlp;
+        application/x-makeself                run;
+        application/x-opera-extension         oex;
+        application/x-perl                    pl pm;
+        application/x-pilot                   pdb prc;
+        application/x-rar-compressed          rar;
+        application/x-redhat-package-manager  rpm;
+        application/x-sea                     sea;
+        application/x-shockwave-flash         swf;
+        application/x-stuffit                 sit;
+        application/x-tcl                     tcl tk;
+        application/x-x509-ca-cert            crt der pem;
+        application/x-xpinstall               xpi;
+        application/xhtml+xml                 xhtml;
+        application/xslt+xml                  xsl;
+        application/zip                       zip;
+        text/calendar                         ics;
+        text/css                              css;
+        text/csv                              csv;
+        text/html                             htm html shtml;
+        text/markdown                         md markdown;
+        text/mathml                           mml;
+        text/plain                            txt;
+        text/vcard                            vcard vcf;
+        text/vnd.rim.location.xloc            xloc;
+        text/vnd.sun.j2me.app-descriptor      jad;
+        text/vnd.wap.wml                      wml;
+        text/vtt                              vtt;
+        text/x-component                      htc;
+
+    }
+  
+  nginx.conf: |
+    user nginx;
+
+    worker_processes 1;
+
+    pid /var/run/nginx.pid;
+
+    load_module "/usr/lib/nginx/modules/ngx_http_geoip_module.so";
+
+    worker_rlimit_nofile 8192;
+
+
+    events {
+        worker_connections 8000;
+    }
+
+
+    http {
+
+      # Hide Nginx version information.
+      server_tokens off;
+      more_set_headers    "Server: landingpage";
+
+      # Specify media (MIME) types for files.
+      include mime.types;
+      default_type application/octet-stream;
+
+      # Set character encodings.
+      charset utf-8;
+      charset_types
+        text/css
+        text/plain
+        text/vnd.wap.wml
+        text/javascript
+        text/markdown
+        text/calendar
+        text/x-component
+        text/vcard
+        text/cache-manifest
+        text/vtt
+        application/json
+        application/manifest+json;
+
+      log_format  graylog2_format  '$remote_addr - $remote_user [$time_local] "$request_method $http_x_original_request_url $server_protocol" $status $body_bytes_sent "$http_referer" "$http_user_agent" "$http_host" <msec=$msec|connection=$connection|connection_requests=$connection_requests|millis=$request_time>';
+      access_log syslog:server=syslog-ext:12301 graylog2_format;
+      error_log syslog:server=syslog-ext:12302;
+
+      keepalive_timeout 20s;
+      sendfile on;
+      tcp_nopush on;
+      merge_slashes off;
+
+      # Enable gzip compression.
+      gzip on;
+      gzip_comp_level 5;
+      gzip_min_length 256;
+      gzip_proxied any;
+      gzip_vary on;
+      gzip_types
+        application/atom+xml
+        application/geo+json
+        application/javascript
+        application/json
+        application/ld+json
+        application/manifest+json
+        application/rdf+xml
+        application/rss+xml
+        application/vnd.ms-fontobject
+        application/wasm
+        application/x-web-app-manifest+json
+        application/xhtml+xml
+        application/xml
+        font/otf
+        image/bmp
+        image/svg+xml
+        text/cache-manifest
+        text/calendar
+        text/css
+        text/javascript
+        text/markdown
+        text/plain
+        text/vcard
+        text/vnd.rim.location.xloc
+        text/vtt
+        text/x-component
+        text/x-cross-domain-policy;
+
+      # Enable brotli compression.
+      brotli on;
+      brotli_comp_level 6;
+      brotli_types 
+        application/atom+xml
+        application/geo+json
+        application/javascript
+        application/json
+        application/ld+json
+        application/manifest+json
+        application/rdf+xml
+        application/rss+xml
+        application/vnd.ms-fontobject
+        application/wasm
+        application/x-web-app-manifest+json
+        application/xhtml+xml
+        application/xml
+        font/otf
+        image/bmp
+        image/svg+xml
+        text/cache-manifest
+        text/calendar
+        text/css
+        text/javascript
+        text/markdown
+        text/plain
+        text/vcard
+        text/vnd.rim.location.xloc
+        text/vtt
+        text/x-component
+        text/x-cross-domain-policy;
+
+      # Specify file cache expiration.
+      map $sent_http_content_type $expires {
+        default                                 1M;
+      
+        # No content
+        ""                                      off;
+      
+        # CSS
+        ~*text/css                              1y;
+      
+        # Data interchange
+        ~*application/atom\+xml                 1h;
+        ~*application/rdf\+xml                  1h;
+        ~*application/rss\+xml                  1h;
+      
+        ~*application/json                      0;
+        ~*application/ld\+json                  0;
+        ~*application/schema\+json              0;
+        ~*application/geo\+json                 0;
+        ~*application/xml                       0;
+        ~*text/calendar                         0;
+        ~*text/xml                              0;
+      
+        # Favicon (cannot be renamed!) and cursor images
+        ~*image/vnd.microsoft.icon              1w;
+        ~*image/x-icon                          1w;
+      
+        # HTML
+        ~*text/html                             0;
+      
+        # JavaScript
+        ~*application/javascript                1y;
+        ~*application/x-javascript              1y;
+        ~*text/javascript                       1y;
+      
+        # Manifest files
+        ~*application/manifest\+json            1w;
+        ~*application/x-web-app-manifest\+json  0;
+        ~*text/cache-manifest                   0;
+      
+        # Markdown
+        ~*text/markdown                         0;
+      
+        # Media files
+        ~*audio/                                1M;
+        ~*image/                                1M;
+        ~*video/                                1M;
+      
+        # WebAssembly
+        ~*application/wasm                      1y;
+      
+        # Web fonts
+        ~*font/                                 1M;
+        ~*application/vnd.ms-fontobject         1M;
+        ~*application/x-font-ttf                1M;
+        ~*application/x-font-woff               1M;
+        ~*application/font-woff                 1M;
+        ~*application/font-woff2                1M;
+
+        # Other
+        ~*text/x-cross-domain-policy            1w;
+      }
+      expires $expires;
+      
+      map $sent_http_content_type $pragma {
+        default                                 public;
+      }
+     
+      set_real_ip_from  10.233.0.0/16;
+      set_real_ip_from  172.20.8.0/24;
+      real_ip_header    X-Original-Client-Ip;
+      real_ip_recursive on;
+
+      # Add X-XSS-Protection for HTML documents.
+      map $sent_http_content_type $x_xss_protection {
+        #           (1)    (2)
+        ~*text/html "1; mode=block";
+      }
+
+      # Add X-Frame-Options for HTML documents.
+      map $sent_http_content_type $x_frame_options {
+        ~*text/html DENY;
+      }
+
+      # Add Content-Security-Policy for HTML documents.
+      map $sent_http_content_type $content_security_policy {
+        {{- if eq .Values.global.allow_eval "yes" }}
+        default "default-src https:; connect-src https: wss:; font-src https: data:; frame-src https: twitter:; frame-ancestors https: http://webvisor.com; img-src https: blob: data:; media-src https:; object-src https:; script-src 'unsafe-inline' 'unsafe-eval' https:; style-src 'unsafe-inline' https:;";
+        {{- else }}
+        default "default-src https:; connect-src https: wss:; font-src https: data:; frame-src https: twitter:; frame-ancestors https: http://webvisor.com; img-src https: blob: data:; media-src https:; object-src https:; script-src 'unsafe-inline' https:; style-src 'unsafe-inline' https:;";
+        {{- end }}
+      }
+
+      # Add Referrer-Policy for HTML documents.
+      map $sent_http_content_type $referrer_policy {
+        ~*text/html "no-referrer-when-downgrade";
+      }
+
+      # Add X-UA-Compatible for HTML documents.
+      map $sent_http_content_type $x_ua_compatible {
+        ~*text/html "IE=edge";
+      }
+
+      # Add Access-Control-Allow-Origin.
+      map $sent_http_content_type $cors {
+        # Images
+        ~*image/ "$http_origin";
+
+        # Web fonts
+        ~*font/                         "$http_origin";
+        ~*application/vnd.ms-fontobject "$http_origin";
+        ~*application/x-font-ttf        "$http_origin";
+        ~*application/font-woff         "$http_origin";
+        ~*application/x-font-woff       "$http_origin";
+        ~*application/font-woff2        "$http_origin";
+      }
+
+      map $sent_http_content_type $strict_transport_security {
+        default "max-age=31536000; includeSubDomains";
+      }
+
+      server {
+        listen 80;
+
+        server_name _;
+
+        root /var/www/html;
+        index index.php;
+        rewrite_log on;
+
+        location ~ /\.well-known {
+          default_type "text/plain";
+          break;
+        }
+
+        location ~* /\.(?!well-known\/) {
+          return 404;
+        }
+
+        location ~* (?:#.*#|\.(?:bak|conf|dist|fla|in[ci]|log|orig|psd|sh|sql|sw[op])|~)$ {
+          return 404;
+        }
+
+
+        {{- range $index, $error_page := .Values.error_pages }}
+        error_page {{ $error_page.code }} /{{ $error_page.page | trimAll "/" }};
+
+
+        location = /{{ $error_page.page | trimAll "/" }} {
+          internal;
+
+          include                            fastcgi_params;
+          fastcgi_buffer_size                256k;
+          fastcgi_buffers                    256 16k;
+          fastcgi_read_timeout               300;
+          fastcgi_index                      index.php;
+          fastcgi_pass                       localhost:9000;
+          fastcgi_split_path_info            ^(.+\.php)(.*)$;
+          fastcgi_param PATH_INFO            $fastcgi_path_info;
+          fastcgi_param SCRIPT_FILENAME      $document_root$fastcgi_script_name;
+          fastcgi_param HTTP_X_FORWARDED_FOR $remote_addr;
+          fastcgi_param HTTP_X_REAL_IP       $remote_addr;
+          fastcgi_param REQUEST_URI          {{ printf "/%s" ((default "/" $.Values.global.ci_path) | trim | trimAll "/") }}/;
+        }
+
+
+        {{- end }}
+
+        location ~* ^(.*)(jpg|jpeg|png)$  {
+          set $webp  $1webp;
+          set $rootFile "${document_root}${webp}";
+          if ($http_accept ~* "webp"){set $test  A;}
+          if (-f $rootFile) {set $test "${test}B";}
+          if ($test = AB) {
+              add_header Vary Accept;
+              rewrite (.*) $webp break;
+          }
+        }
+
+        location ~ [^/]\.php(/|$) {
+          include                            fastcgi_params;
+          fastcgi_buffer_size                256k;
+          fastcgi_buffers                    256 16k;
+          fastcgi_read_timeout               300;
+          fastcgi_index                      index.php;
+          fastcgi_pass                       localhost:9000;
+          fastcgi_split_path_info            ^(.+\.php)(.*)$;
+          fastcgi_param PATH_INFO            $fastcgi_path_info;
+          fastcgi_param SCRIPT_FILENAME      $document_root$fastcgi_script_name;
+          fastcgi_param HTTP_X_FORWARDED_FOR $remote_addr;
+          fastcgi_param HTTP_X_REAL_IP       $remote_addr;
+          fastcgi_param REQUEST_URI          $http_x_original_request_url;
+        }
+
+        location / {
+          index index.php index.html index.htm;
+          try_files $uri $uri/ =404;
+        }
+
+        location /healthz-2q9e4h {
+          stub_status on;
+          access_log  off;
+        }
+
+        location ~ ^/(status|ping)$ {
+          fastcgi_split_path_info ^(.+\.php)(/.+)$;
+          fastcgi_pass            localhost:9000;
+          fastcgi_index           index.php;
+          fastcgi_param           SCRIPT_FILENAME $document_root$fastcgi_script_name;
+          include                 fastcgi_params;
+          access_log              off;
+        }
+
+        add_header X-UA-Compatible             $x_ua_compatible           always;
+        add_header Referrer-Policy             $referrer_policy           always;
+        add_header X-Content-Type-Options      nosniff                    always;
+        #add_header X-Frame-Options             $x_frame_options           always;
+        add_header X-XSS-Protection            $x_xss_protection          always;
+        add_header Access-Control-Allow-Origin $cors                      always;
+        add_header Content-Security-Policy     $content_security_policy   always;
+        add_header Pragma                      $pragma                    always;
+        add_header Strict-Transport-Security   $strict_transport_security always;
+      }
+    }
+---

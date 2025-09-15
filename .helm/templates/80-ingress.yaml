@@ -1,0 +1,198 @@
+{{- $ci_path := printf "/%s" ((default "/" .Values.global.ci_path) | trim | trimAll "/") -}}
+{{- $service_name := printf "landingpage" -}}
+{{- $ingress_name := printf "nginx" -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    {{- if ne (default "" .Values.global.lifetime) "" }}
+    synergy.ru/lifetime: "{{ .Values.global.lifetime }}"
+    {{- end }}
+    {{- if ne (default "" .Values.global.mon_probe) "" }}
+    synergy.ru/blackbox.probe: {{ .Values.global.mon_probe }}
+    {{- end }}
+    {{- if ne (default "" .Values.global.mon_code) "" }}
+    synergy.ru/blackbox.code: {{ .Values.global.mon_code }}
+    {{- end }}
+    {{- if ne (default "" .Values.global.ssl_exp) "" }}
+    synergy.ru/ssl.exp: {{ .Values.global.ssl_exp }}
+    {{- end }}
+    {{- if ne (default "" .Values.global.www_redirect) "no" }}
+    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+    {{- end }}
+    {{- if eq .Values.global.env_name "dev" }}
+    nginx.ingress.kubernetes.io/auth-url: "http://dev-auth.auth.svc.cluster.local"
+    {{- end }}
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      # Additional configuration snippet
+      {{- if ne (default "" .Values.block_code) "" }}
+      {{- range $index, $country := .Values.block_countries }}
+      if ($geoip2_city_country_code = {{ $country.code }}) {
+        return {{ $.Values.block_code }};
+      }
+      {{- end }}
+      {{- end }}
+
+      rewrite ^([^.]*[^/])$ https://$host$1/ permanent;
+
+      {{- if ne $ci_path "/" }}
+      rewrite (?i){{ $ci_path }}(/|$)(.*) /$2 break;
+      {{- end }}
+  name: ingress
+spec:
+  ingressClassName: "{{ $ingress_name }}"
+  rules:
+      - host: {{ .Values.global.ci_url | trim }}
+        http:
+          paths:
+          - path: {{ $ci_path }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ $service_name }}
+                port:
+                  name: http
+---
+{{- if eq .Values.global.env_name "prod" }}
+{{- range $index, $mirror := .Values.mirrors }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    {{- if ne (default "" $.Values.global.lifetime) "" }}
+    synergy.ru/lifetime: "{{ $.Values.global.lifetime }}"
+    {{- end }}
+    {{- if ne (default "" $.Values.global.ssl_exp) "" }}
+    synergy.ru/ssl.exp: {{ $.Values.global.ssl_exp }}
+    {{- end }}
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      # Additional configuration snippet
+      {{- if ne (default "" $.Values.block_code) "" }}
+      {{- range $index, $country := $.Values.block_countries }}
+      if ($geoip2_city_country_code = {{ $country.code }}) {
+        return {{ $.Values.block_code }};
+      }
+      {{- end }}
+      {{- end }}
+
+      rewrite ^([^.]*[^/])$ https://$host$1/ permanent;
+
+      if ($is_args = '?') {
+          rewrite {{ $mirror.path | trimSuffix "/" }}(/|$)(.*)   {{ if $mirror.subdir }}{{ $mirror.subdir }}{{ end }}/$2?$args{{- if $mirror.query }}&{{ $mirror.query }}{{- end }}? break;
+      }
+
+      if ($is_args = '') {
+          rewrite {{ $mirror.path | trimSuffix "/" }}(/|$)(.*)   {{ if $mirror.subdir }}{{ $mirror.subdir }}{{ end }}/$2{{- if $mirror.query }}?{{ $mirror.query }}{{- end }} break;
+      }
+
+  name: mirror-{{ printf "%s%s" $mirror.host $mirror.path | replace "/" "-" | replace "_" "-" | trimSuffix "-" }}
+spec:
+  ingressClassName: "{{ $ingress_name }}"
+  rules:
+      - host: {{ $mirror.host }}
+        http:
+          paths:
+            {{- if ne $mirror.path "/" }}
+          - path: /{{ $mirror.path | trimAll "/" }}
+            {{- else }}
+          - path: /
+            {{- end }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ $service_name }}
+                port:
+                  name: http
+---
+{{- range $index, $redirect := $mirror.redirect }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    {{- if ne (default "" $.Values.global.lifetime) "" }}
+    synergy.ru/lifetime: "{{ $.Values.global.lifetime }}"
+    {{- end }}
+    {{- if ne (default "" $.Values.global.ssl_exp) "" }}
+    synergy.ru/ssl.exp: {{ $.Values.global.ssl_exp }}
+    {{- end }}
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      # Additional configuration snippet
+      add_header Cache-Control "private, max-age=0, no-cache";
+
+      if ($is_args = '?') {
+          rewrite {{ $redirect.path | trimSuffix "/" }}(/|$)(.*) https://{{ $mirror.host }}{{ $mirror.path | trimSuffix "/" }}/$2?$args? permanent;
+      }
+
+      if ($is_args = '') {
+          rewrite {{ $redirect.path | trimSuffix "/" }}(/|$)(.*) https://{{ $mirror.host }}{{ $mirror.path | trimSuffix "/" }}/$2 permanent;
+      }
+
+  name: redirect-m-{{ printf "%s%s" $redirect.host $redirect.path | replace "/" "-" | replace "_" "-" | trimSuffix "-" }}
+spec:
+  ingressClassName: "{{ $ingress_name }}"
+  rules:
+      - host: {{ $redirect.host }}
+        http:
+          paths:
+            {{- if ne $redirect.path "/" }}
+          - path: /{{ $redirect.path | trimAll "/" }}
+            {{- else }}
+          - path: /
+            {{- end }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ $service_name }}
+                port:
+                  name: http
+---
+{{- end }}
+
+{{- end }}
+{{- end }}
+
+{{- if eq .Values.global.env_name "prod" }}
+{{- range .Values.redirects }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    {{- if ne (default "" $.Values.global.lifetime) "" }}
+    synergy.ru/lifetime: "{{ $.Values.global.lifetime }}"
+    {{- end }}
+    {{- if ne (default "" $.Values.global.ssl_exp) "" }}
+    synergy.ru/ssl.exp: {{ $.Values.global.ssl_exp }}
+    {{- end }}
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      # Additional configuration snippet
+      add_header Cache-Control "private, max-age=0, no-cache";
+
+      if ($is_args = '?') {
+          rewrite {{ .path | trimSuffix "/" }}(/|$)(.*) https://{{ $.Values.global.ci_url }}{{- if ne $ci_path "/" }}{{ $ci_path }}{{- end}}/$2?$args{{- if .query }}&{{ .query }}{{- end }}? permanent;
+      }
+
+      if ($is_args = '') {
+          rewrite {{ .path | trimSuffix "/" }}(/|$)(.*) https://{{ $.Values.global.ci_url }}{{- if ne $ci_path "/" }}{{ $ci_path }}{{- end}}/$2{{- if .query }}?{{ .query }}{{- end }} permanent;
+      }
+
+  name: redirect-{{ printf "%s%s" .host .path | replace "/" "-" | replace "_" "-" | trimSuffix "-" }}
+spec:
+  ingressClassName: "{{ $ingress_name }}"
+  rules:
+      - host: {{ .host }}
+        http:
+          paths:
+            {{- if ne .path "/" }}
+          - path: /{{ .path | trimAll "/" }}
+            {{- else }}
+          - path: /
+            {{- end }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ $service_name }}
+                port:
+                  name: http
+---
+{{- end }}
+{{- end }}

@@ -1,0 +1,205 @@
+.main {
+	background-image: url('../img/main/background.png');
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+	min-height: 980px;
+	width: 100%;
+    border-radius: 30px;
+
+	.container{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: stretch;
+        min-height: 980px;
+        padding: 19px 0 19px 0;
+		border-radius: 30px;
+		overflow: hidden;
+	}
+	&__top{
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		width: 100%;
+		padding: 0 20px;
+	}
+	&__title{
+		font-size: 158px;
+		line-height: 89%;
+		color: #fff;
+	}
+	&__info{
+		height: 242px;
+		border-radius: 30px;
+		border: 1px solid #fff;
+		max-width: 461px;
+		min-height: 242px;
+		&-table{
+			display: grid;
+			height: 100%;
+			grid-template-columns: repeat(2, 1fr);
+			grid-template-rows: repeat(2, 1fr);
+			color: #fff;
+			
+			&_item{
+				padding: 19px 19px;
+				color: inherit;
+				
+				/* вертикальная разделительная линия между колонками */
+				&:nth-child(odd){
+					border-right: 1px solid #fff;
+				}
+				/* горизонтальная разделительная линия между строками */
+				&:nth-child(-n+2){
+					border-bottom: 1px solid #fff;
+				}
+
+				&-text{
+					width: 100%;
+					font-size: 20px;
+					line-height: 1.2;
+					display: inline-flex;
+					align-items: baseline;
+					gap: 8px;
+					flex-wrap: nowrap;
+					white-space: nowrap;
+					flex-direction: row;
+					justify-content: space-between;
+					&_num{
+						display: inline-block;
+						white-space: nowrap;
+						max-width: 100px;
+					}
+				}	
+				&-subtext{
+					width: 100%;
+					opacity: .9;
+					font-size: 16px;
+					line-height: 1.2;
+					display: inline-flex;
+					align-items: baseline;
+					gap: 8px;
+					flex-wrap: nowrap;
+					white-space: nowrap;
+					justify-content: space-between;
+					&_num{
+						display: inline-block;
+						white-space: nowrap;
+						
+					}
+				}
+			}
+		}
+	}
+	&__bottom{
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		padding: 0 15px;
+		&-slider .slick-slide > div{
+			height: auto;
+		}
+		&-top{
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: center;
+			color: #000;
+
+			&_title{
+				font-size: 48px;
+				line-height: 90%;
+			}
+			&_info{
+				display: flex;
+				flex-direction: row;
+				gap: 20px;
+				align-items: center;
+				&-title{
+					font-size: 18px;
+					line-height: 90%;
+					color: #fff;
+
+				}
+				&-button{
+					padding: 0px 10px;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					font-size: 18px;
+					line-height: 90%;
+					color: #fff;
+					background-color: red;
+					border-radius: 10px;
+					min-height: 30px;
+				}
+			}
+		}
+
+		/* Slick slider area */
+		&-slider{
+			width: 100%;
+			
+			.slick-track{ 
+				display: block; 
+			}
+			/* для Swiper: ширина слайда по контенту (видно несколько сразу) */
+			&.swiper{ overflow: visible; }
+			.swiper-slide{ width: auto !important; flex: 0 0 auto; }
+			/* не переопределяем .slick-slide display/float, чтобы не ломать горизонтальную раскладку */
+			&_item{
+				display: flex;
+				flex-direction: column;
+				padding: 20px;
+				color: #fff;
+				background: rgba(255,255,255,0.1);
+				border-radius: 16px;
+				margin: 0 10px;
+				width: 370px;
+				height: 250px;
+				&-num{
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					font-size: 26px;
+					border-radius: 50%;
+					border: 1px solid #fff;
+					width:100%;
+					height: 100%;
+					max-width: 53px;
+					max-height: 53px;
+					align-self: flex-end;
+				}
+				&-title{
+					font-size: 38px;
+					line-height: 106%;
+					margin-top: auto;
+					align-self: flex-start;
+					max-height: 76px;
+				}
+			}
+		}
+
+		&-progress{
+			width: 100vw; /* во всю ширину экрана */
+			margin-left: calc(50% - 50vw);
+			height: 4px;
+			background: rgba(255,255,255,0.2);
+			position: relative;
+			&_bar{
+				position: absolute;
+				top: 0; left: 0;
+				height: 100%;
+				width: 0%;
+				background: #fff;
+				transition: width .2s ease;
+			}
+		}
+	}
+
+	
+
+}
+
+

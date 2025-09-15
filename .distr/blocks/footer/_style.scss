@@ -1,0 +1,236 @@
+.footer{
+  padding: 45px 0 80px;
+  background: var(--background-dark-color);
+  color: #ffffff;
+
+  &__container{
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  &__address{
+    padding-right: 38px;
+    flex: 1;
+
+    &:last-child{
+      padding-right: 0;
+    }
+
+    &-wrap{
+      flex: 1 0 33%;
+      max-width: 397px;
+      margin-bottom: 38px;
+      display: flex;
+    }
+
+    &-title{
+      display: inline-block;
+      position: relative;
+      padding-left: 38px;
+      padding-right: 20px;
+      font-size: 16px;
+      margin-bottom: 5px;
+      margin-top: 0;
+
+      &:before{
+        content: '';
+        position: absolute;
+        top: 2px;
+        left: 0;
+        width: 23px;
+        height: 16px;
+        background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABcAAAARCAYAAAA2cze9AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAADvSURBVHgBpVMBEcIwDHw4BExCJYCDSkBCcTAJOGAOJgEJlYCE4aA4KO1dNkppkgG5++3W/H+TSwb8GRHouNxWELmEHrKxSy+LHyryCYGrLJ2bhCnz8E2QMBIuDGcsOAZroxJ+iKvLM85YG9RuKfbK5WGtsauEMyzlj1JeM/eM+MZ01eyuZWwY4WKg5N82q95zBzmsku+lyielMg2BM7YNcr5sYIwG+sn0wTbWK9JZ1zCZaD6DOtjID3JP+Xo9ndDta7BU3ZUhjTOx2BRP3x3lA7NVI6I+JFN1Z5RuF+wS7wQ5HvmxAe5JcMjv4lzUPgFyQm/SbEB6gwAAAABJRU5ErkJggg==')
+      }
+
+      &:after{
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%);
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+
+      &--circle{
+
+        &-green{
+
+          &:after{
+            background: #169D00;
+          }
+        }
+
+        &-blue{
+
+          &:after{
+            background: #0229F5;
+          }
+        }
+      }
+    }
+
+    &-desc{
+      font-size: 14px;
+      opacity: .8;
+      margin-bottom: 0;
+    }
+  }
+
+  &__nav-wrap{
+    display: none;
+  }
+
+  &__social{
+    position: relative;
+    display: inline-block;
+    transition: all .2s ease-in-out;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #373737;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.15);
+    opacity: .8;
+    margin-left: 30px;
+
+    &:first-child{
+      margin-left: 0;
+    }
+
+    &-wrap{
+      flex: 1 0 33%;
+      margin-bottom: 38px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    &-icon{
+      position: relative;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      fill: #C0C0C0;
+      transition: all .2s ease-in-out;
+
+      &--f{
+        width: 10px;
+        height: 20px;
+      }
+
+      &--vk{
+        width: 22px;
+        height: 12px;
+      }
+
+      &--inst{
+        width: 20px;
+        height: 20px;
+      }
+
+      &--tw{
+        width: 24px;
+        height: 20px;
+      }
+
+      &--tel{
+        width: 19px;
+        height: 16px;
+      }
+
+      &--wats{
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    &:hover{
+
+      & .footer__social-icon{
+        fill: #fff;
+      }
+    }
+  }
+
+  &__button{
+    font-size: 14px;
+    padding: 12px 28px;
+
+    &-wrap{
+      flex: 1 0 33%;
+      max-width: 285px;
+      margin-bottom: 38px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+  }
+
+  &__logo{
+
+    &-wrap{
+      flex: 1 0 33%;
+      max-width: 273px;
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  &__search{
+    display: block;
+    width: 100%;
+    padding: 12px 75px 12px 25px;
+    background: none;
+    border: 1px solid #fff;
+    font-size: 14px;
+    line-height: .8;
+    color: #ffffff;
+
+    &-wrap{
+      flex: 1 0 33%;
+      padding-left: 40px;
+      position: relative;
+    }
+
+    &-icon{
+      position: absolute;
+      right: 28px;
+      top: 12px;
+      width: 19px;
+      height: 19px;
+    }
+  }
+
+  &__policy{
+    color: #ffffff;
+    font-size: 10px;
+    text-transform: uppercase;
+    opacity: .7;
+    line-height: .9;
+    text-decoration: underline;
+
+    &:hover,
+    &:focus,
+    &:active{
+      color: #ffffff;
+    }
+
+    &-wrap{
+      flex: 1 0 33%;
+      max-width: 344px;
+      padding-left: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+  }
+
+  &__copyright{
+    color: #ffffff;
+    font-size: 10px;
+    opacity: .7;
+    margin: 0;
+    line-height: .9;
+  }
+}

@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: syslog-ext
+spec:
+  type: ExternalName
+  {{- if eq .Values.global.env_name "prod" }}
+  externalName: syslog.synergy.ru
+  {{- else }}
+  externalName: syslog2.synergy.ru
+  {{- end }}
+---

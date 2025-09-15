@@ -1,0 +1,113 @@
+.header{
+    .container{
+        max-width: 1890px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 19px 0 19px 0;
+    }
+    &__logo{
+        width: 269px;
+        height: 22px;
+        &-img{
+            width: 100%;
+            height: 100%;
+        }
+    }
+    &__menu{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        &-link{
+            display: inline-flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            align-items: center;
+            justify-content: center;
+            padding: 0px 0px;
+            min-height: 30px;
+            min-width: 144px;
+            background-color: #e9e9ea;
+            border: 1px solid transparent;
+            border-radius: 10px;
+            &:hover{
+                background-color: #fff;
+                color: red;
+                border-color: red;
+            }
+        }
+        
+    }
+    &__sidebar{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: nowrap;
+        min-height: 30px;
+        background-color: transparent;
+        border-radius: 10px;
+        &:hover{
+            background-color: #fff;
+        }
+        &-search{
+            width: 30px;
+            height: 30px;
+            &_img{
+                width: 100%;
+                height: 100%;
+            }
+        }
+            
+        &-language{
+            display: inline-flex;
+            flex-direction: row;
+            align-items: center;
+            padding: 3px 5px;
+            background-color: #fff;
+            color: #000;
+            border: 1px solid #000;
+            border-radius: 10px;
+            gap: 8px;
+            min-height: 30px;
+            &_img{
+                width: 19px;
+                height: 18px;
+            }
+            &_image{
+                width: 6px;
+                height: 3px;
+            }
+            &_text{
+                text-transform: uppercase;
+                font-size: 14px;
+                white-space: nowrap;
+                align-self: start;
+            }
+        }
+        &-profile{
+            display: inline-flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            background-color: #3a3a3a;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            gap: 8px;
+            padding: 2px 10px;
+            min-height: 30px;
+            &_img{
+                width: 19px;
+                height: 18px;
+            }
+            &_text{
+                white-space: nowrap;
+            }
+        }
+    }
+}

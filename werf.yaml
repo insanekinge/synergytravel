@@ -1,0 +1,75 @@
+{{ $_ := env "CI_PROJECT_PATH_SLUG"  | trunc 49 | trimSuffix "-" | set . "ProjectName" }}
+---
+configVersion: 1
+project: {{ .ProjectName }}
+cleanup:
+  keepPolicies:
+  - references:
+      tag: /.*/
+      limit:
+        last: 2
+  - references:
+      branch: /.*/
+      limit:
+        last: 2
+        operator: And
+    imagesPerReference:
+      last: 2
+      operator: And
+  - references:  
+      branch: /^(master)$/
+    imagesPerReference:
+      last: 2
+---
+artifact: public-folder
+from: hub.synergy.ru/common-images/node-lp:v8-latest
+git:
+  - add: /
+    to: /app
+    excludePaths:
+      - werf.yaml
+      - werf-giterminism.yaml
+      - .gitlab-ci.yml
+      - .helm
+    stageDependencies:
+      install:
+        - package.json
+      beforeSetup:
+        - .distr
+        - gulpfile.js
+shell:
+  install:
+  - cd /app
+  - echo -e "registry=https://repository.synergy.ru/repository/npm-proxy/\n" > .npmrc
+  - npm install
+  beforeSetup:
+  - cd /app
+  - export NODE_ENV=production
+  - npm run gulp build
+  - rm -f public/contents.json
+  - rm -f public/content.json
+---
+image: nginx
+from: hub.synergy.ru/common-images/nginx-brotli:v1.19.10-latest
+import:
+  - artifact: public-folder
+    add: /app/public
+    to: /var/www/html
+    after: install
+shell:
+  install:
+  - echo "Copying files"
+---
+image: php-fpm
+from: hub.synergy.ru/common-images/php-fpm-lp:v8.3-latest
+import:
+  - artifact: public-folder
+    add: /app/public
+    to: /var/www/html
+    owner: www-data
+    group: www-data
+    after: install
+shell:
+  install:
+  - echo "Copying files"
+---

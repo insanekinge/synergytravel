@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: landingpage
+spec:
+  {{- if eq .Values.global.env_name "prod" }}
+  replicas: {{ if .Values.instance_count }}{{ .Values.instance_count }}{{ else }}1{{ end }}
+  {{- else}}
+  replicas: 1
+  {{- end}}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: landingpage
+  template:
+    metadata:
+      labels:
+        app: landingpage
+        ksync: landingpage
+      annotations:
+        {{- if ne .Values.global.lifetime "" }}
+        synergy.ru/lifetime: {{ .Values.global.lifetime }}
+        {{- end }}
+        checksum/config: {{ include (print $.Template.BasePath "/11-landingpage-cm.yaml") . | sha256sum }}
+    spec:
+      containers:
+        - name: php-fpm
+          image: {{ index .Values.werf.image "php-fpm" }}
+          ports:
+            - name: php-fpm
+              containerPort: 9000
+          volumeMounts:
+            - name: config-volume-php
+              mountPath: /usr/local/etc/php/php.ini
+              subPath: php.ini
+            - name: config-volume-php
+              mountPath: /usr/local/etc/php-fpm.conf
+              subPath: php-fpm.conf
+        - name: nginx
+          image: {{ index .Values.werf.image "nginx" }}
+          ports:
+            - name: http
+              containerPort: 80
+          volumeMounts:
+            - name: config-volume-nginx
+              mountPath: /etc/nginx
+      volumes:
+        - name: config-volume-php
+          configMap:
+            name: php-fpm-config
+        - name: config-volume-nginx
+          configMap:
+            name: nginx-config
+      imagePullSecrets:
+        - name: docker-registry{{- if ne .Values.global.env_name "prod" }}-dev{{- end}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: landingpage
+spec:
+  ports:
+    - port: 80
+      name: http
+  selector:
+    app: landingpage
+---

@@ -1,0 +1,149 @@
+.partners{
+	margin-bottom: 80px;
+	padding: 20px 0;
+	background: #fff;
+	color: #ffffff;
+	background-image: url('../img/partners/background.png');
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+	height: 930px;
+
+	.container{ 
+		width: 100%;
+		max-width: auto;
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+	}
+
+	&__header{
+		display: grid;
+		grid-template-columns: repeat(6, 1fr);
+		grid-template-rows: repeat(1, auto);
+		grid-column-gap: 0px;
+		grid-row-gap: 0px;
+	}
+
+	&__title{ 
+		grid-area: 1 / 1 / 2 / 6; 
+	font-size: 170px; 
+	line-height: 1; 
+	letter-spacing: -3px;
+	color: #ffffff;
+	}
+	&__subtitle{ 
+		font-size: 60px; 
+		grid-area: 1 / 6 / 2 / 7;
+		letter-spacing: -1px;
+		white-space: nowrap;
+	}
+}
+
+/* Прижать слайдер к низу контейнера */
+.partners .partners__bottom{ 
+	margin-top: auto; 
+}
+
+/* Стили слайдера (скопированы с main и адаптированы под префикс partners__) */
+.partners{
+	&__bottom{
+		
+		&-slider .slick-slide > div{ 
+			height: auto; 
+			padding-bottom: 26px; 
+		}
+		&-top{
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: center;
+			&_title{ 
+				font-size: 48px; 
+				line-height: 90%; 
+				padding-bottom: 26px;
+			}
+			&_info{ 
+				display: flex; 
+				flex-direction: row;
+				 gap: 20px; 
+				 align-items: center; 
+				}
+			&_info-title{ 
+				font-size: 18px; 
+				line-height: 90%; 
+				color: #fff; 
+			}
+			&_info-button{ 
+				padding: 0 10px; 
+				display:flex; 
+				align-items:center; 
+				justify-content:center; 
+				font-size:18px; 
+				line-height:90%; 
+				color:#fff; 
+				background-color:red; 
+				border-radius:10px; 
+				min-height:30px; 
+			}
+		}
+		&-slider{ 
+			width: 100%; 
+		}
+			
+		&-slider{
+			&.swiper, &.swiper-container{ 
+				overflow: visible; 
+			}
+			.swiper-wrapper{ 
+				display: flex; 
+			}
+			.swiper-slide{ 
+				width:auto !important; 
+				flex:0 0 auto; 
+			}
+			&_item{
+				display:flex; 
+				flex-direction:column; 
+				padding:20px; 
+				color:#fff; 
+				background: rgba(255,255,255,0.1); 
+				border-radius:16px; 
+				margin:0 10px; 
+				width:600px;
+				 height:223px;
+
+				&-title{ 
+					font-size:38px;
+					 line-height:106%; 
+					 margin-bottom:auto; 
+					 align-self:flex-start; 
+					 max-height:76px; 
+				}
+				&-text{
+					font-size: 23px; 
+					margin-top:auto; 
+					line-height: 100%;
+				}
+
+			}
+		}
+		&-progress{ 
+			width:100vw; 
+			margin-left: calc(50% - 50vw); 
+			height:4px; 
+			background: rgba(255,255,255,0.2); 
+			position:relative; 
+			margin-top: 26px;
+		}
+		&-progress_bar{ 
+			position:absolute; 
+			top:0; 
+			left:0; 
+			height:100%;
+			 width:0%; 
+			 background:#fff; 
+			 transition: width .2s ease; 
+			}
+	}
+}
