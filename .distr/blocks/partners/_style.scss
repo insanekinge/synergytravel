@@ -8,13 +8,15 @@
 	background-position: center;
 	background-size: cover;
 	height: 930px;
-
+	border-radius: 30px;
 	.container{ 
 		width: 100%;
 		max-width: auto;
 		display: flex;
 		flex-direction: column;
 		height: 100%;
+		overflow: hidden;
+		border-radius: 30px;
 	}
 
 	&__header{
