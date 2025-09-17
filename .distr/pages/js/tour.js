@@ -114,20 +114,20 @@ function initTourFilters(){
     // Collect options once on init
     options = collectOptions();
 
-    // Bind filter buttons explicitly
-    var $btnType = root.querySelector('.tour__filter[data-filter="type"] .tour__filter-button');
-    var $btnDuration = root.querySelector('.tour__filter[data-filter="duration"] .tour__filter-button');
-    var $btnPrice = root.querySelector('.tour__filter[data-filter="price"] .tour__filter-button');
-
-    if ($btnType){
-        $btnType.addEventListener('click', function(){ renderTags('type', options.type || []); });
-    }
-    if ($btnDuration){
-        $btnDuration.addEventListener('click', function(){ renderTags('duration', options.duration || []); });
-    }
-    if ($btnPrice){
-        $btnPrice.addEventListener('click', function(){ renderTags('price', options.price || []); });
-    }
+    // Bind filter buttons explicitly + toggle active state
+    var $filters = [].slice.call(root.querySelectorAll('.tour__filter'));
+    $filters.forEach(function($f){
+        var $btn = $f.querySelector('.tour__filter-button');
+        if ($btn){
+            $btn.addEventListener('click', function(){
+                $filters.forEach(function(el){ el.classList.remove('is-active'); });
+                $f.classList.add('is-active');
+                var name = $f.getAttribute('data-filter');
+                var opts = collectOptions();
+                renderTags(name, opts[name] || []);
+            });
+        }
+    });
 
     // Tag click (delegated)
     $tagsRoot.addEventListener('click', function(e){
