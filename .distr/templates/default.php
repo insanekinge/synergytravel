@@ -18,10 +18,15 @@ $partner = isset($_GET['partner']) ? urldecode( strtolower($_GET['partner']) ) :
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
-  <meta name="description" content="<?= $description ?>">
-  <title><?= $title ?></title>
-  <meta property="og:title" content="<?= $title ?>">
-  <meta property="og:description" content="<?= $description ?>">
+  <?php
+    // Defaults to prevent notices/warnings when not provided
+    if (!isset($title) || !$title) { $title = 'Synergy travel'; }
+    if (!isset($description)) { $description = ''; }
+  ?>
+  <meta name="description" content="<?= htmlspecialchars($description) ?>">
+  <title><?= htmlspecialchars($title) ?></title>
+  <meta property="og:title" content="<?= htmlspecialchars($title) ?>">
+  <meta property="og:description" content="<?= htmlspecialchars($description) ?>">
   <meta property="og:url" content="//<?=$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] ?>">
 
 	<!-- Raleway 600 font -->

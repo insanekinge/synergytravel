@@ -25,12 +25,12 @@
 				grabCursor: true,
 				freeMode: false,
 				speed: 400,
-				on: {
-					progress: function(sw, progress){
-						if ($progress.length) $progress.css('width', (progress * 100) + '%');
-					},
-					resize: function(sw){ sw.update(); }
-				}
+					on: {
+						progress: function(sw, progress){
+							if ($progress.length) $progress.css('width', (progress * 100) + '%');
+						},
+						resize: function(sw){ try { if (sw && typeof sw.update === 'function') sw.update(); } catch(e) {} }
+					}
 			});
 		});
 	});

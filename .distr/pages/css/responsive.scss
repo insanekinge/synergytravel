@@ -1,0 +1,5 @@
+/* minimal responsive to satisfy link in default.php */
+@media (max-width: 1200px) {
+	.tour__cards{ grid-template-columns: repeat(12, 1fr); }
+}
+
