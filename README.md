@@ -1,4 +1,4 @@
-#Synergy Travel booking project (Node.js, JS, PHP, NJK) 
+# Synergy Travel booking project (Node.js, JS, PHP, NJK) 
 
 ```
 booking project exp
