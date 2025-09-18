@@ -1,26 +1,48 @@
 <footer class="footer">
 	<div class="container">
 		<div class="footer__inner">
-		<div class="footer__form-wrap">
+
+			<div class="footer__form-wrap">
+
+				<div class="footer__form-wrap_info">Контакты</div>
+				<div class="footer__form-wrap_title">Направляйте ваши вопросы и предложения о сотрудничестве по указанному адресу</div>
+				<div class="footer__form-wrap_subtitle">Отправить сообщение</div>
 				<form class="footer__form" id="footerContactForm">
-					<div class="footer__form-row">
-						<div class="footer__form-group">
-							<input type="text" class="footer__form-input" name="name" placeholder="Имя" required>
-						</div>
-						<div class="footer__form-group">
-							<input type="tel" class="footer__form-input" name="phone" placeholder="Телефон" required>
+				
+					<div class="footer__form-left">
+						
+						
+						<div class="footer__form-group footer__form-group--message">
+							<textarea class="footer__form-textarea" name="message" placeholder="Ваше сообщение" rows="4" required></textarea>
 						</div>
 					</div>
-					<div class="footer__form-group footer__form-group--message">
-						<textarea class="footer__form-textarea" name="message" placeholder="Ваше сообщение" rows="4" required></textarea>
+
+					<div class="footer__form-right">
+						<div class="footer__form-row">
+							<div class="footer__form-group">
+								<input type="text" class="footer__form-input" name="name" placeholder="Имя" required>
+							</div>
+							<div class="footer__form-group">
+								<input type="tel" class="footer__form-input" name="phone" placeholder="Телефон" required>
+							</div>
+						</div>
+						<button type="submit" class="footer__form-submit button button--accent">Отправить</button>
+						<label class="footer__checkbox">
+							<input type="checkbox" class="footer__checkbox-input" name="agreement" required>
+							<span class="footer__checkbox-text">Я&nbsp;даю согласие на&nbsp;обработку персональных данных, согласен на&nbsp;получение информационных рассылок от&nbsp;&laquo;Synergy Travel &raquo; и&nbsp;соглашаюсь c&nbsp;политикой конфиденциальности</span>
+						</label>
 					</div>
-					<button type="submit" class="footer__form-submit button button--accent">Отправить</button>
-					<label class="footer__checkbox">
-						<input type="checkbox" class="footer__checkbox-input" name="agreement" required>
-						<span class="footer__checkbox-text">Я&nbsp;даю согласие на&nbsp;обработку персональных данных и соглашаюсь c&nbsp;политикой конфиденциальности</span>
-					</label>
+
 				</form>
+
+				<div class="footer__form-wrap_policy">
+					<p class="footer__form-wrap_policy-date">&copy;1988&nbsp;&mdash; 2025. Корпорация &laquo;Синергия&raquo;</p>
+					<p class="footer__form-wrap_policy-rights">Все права защищены</p>
+				</div>
+
 			</div>
+			
+
 			<div class="footer__content">
 				<div class="footer__top">
 					<div class="footer__top-mail">
@@ -72,12 +94,14 @@
 					<div class="footer__social-accept"> Пользовательское соглашение</div>
 					<div class="footer__social-official"> Официальные соцсети: </div>
 					<ul class="footer__social-list">
-						<li class="footer__social-list_item"><img src="" alt="" class="footer__social-list_item-img"></li>
-						<li class="footer__social-list_item"><img src="" alt="" class="footer__social-list_item-img"></li>
-						<li class="footer__social-list_item"><img src="" alt="" class="footer__social-list_item-img"></li>
+						<li class="footer__social-list_item"><img src="../img/footer/tg.svg" alt="Telegram" class="footer__social-list_item-img"></li>
+						<li class="footer__social-list_item"><img src="../img/footer/t.svg" alt="T" class="footer__social-list_item-img"></li>
+						<li class="footer__social-list_item"><img src="../img/footer/vk.svg" alt="VK" class="footer__social-list_item-img"></li>
 					</ul>
 					<div class="footer__social-up">
-						<button class="footer__social-up_button"></button>
+						<a href="#" class="footer__social-up_link">
+							<img src="../img/footer/link.svg" alt="Наверх" class="footer__social-up_link-img">
+						</a>
 					</div>
 				</div>
 
