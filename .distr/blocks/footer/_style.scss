@@ -21,9 +21,9 @@
 		background-color: #7E7E80;
 		width: 50%;
 		border-radius: 30px;
+		padding: 20px;
 
 	}
-
 
 	&__top{
 		display: flex;
@@ -58,6 +58,56 @@
 			}
 		}
 
+	}
+	&__social{
+		display: flex;
+		flex-direction: row;
+		gap: 117px;
+
+	}
+	&__bottom{
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		&-adress{
+			display: flex;
+			flex-direction: column;
+			&_bold{
+
+				&-red{
+					
+				}
+			}
+			&_title{
+				
+			}
+			&_description{
+				
+			}
+		}
+		&-graph{
+			display: flex;
+			flex-direction: column;
+
+			&_title{
+
+			}
+			&_list{
+				display: flex;
+				flex-direction: column;
+				&-item{
+					display: flex;
+					flex-direction: row;
+					
+					&_text{
+
+					}
+					&_time{
+
+					}
+				}
+			}
+		}
 	}
 
 	&__form-wrap{

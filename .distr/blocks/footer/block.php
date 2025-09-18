@@ -49,9 +49,26 @@
 						<div class="footer__bottom-adress_description">г. Москва, Ленинградский
 						пр-т, д. 80, корпуса Г, Ж</div>
 					</div>
+					<div class="footer__bottom-graph">
+						<div class="footer__bottom-graph_title">График работы:</div>
+						<ul class="footer__bottom-graph_list">
+							<li class="footer__bottom-graph_list-item">
+								<p class="footer__bottom-graph_list-item_text">Пн-Пт:</p>
+								<p class="footer__bottom-graph_list-item_time">9:00 - 20:00</p>
+							</li>
+							<li class="footer__bottom-graph_list-item">
+								<p class="footer__bottom-graph_list-item_text">Сб</p>
+								<p class="footer__bottom-graph_list-item_time">9:00 - 20:00</p>
+							</li>
+							<li class="footer__bottom-graph_list-item">
+								<p class="footer__bottom-graph_list-item_text">Вс</p>
+								<p class="footer__bottom-graph_list-item_time">9:00 - 20:00</p>
+							</li>
+						</ul>
+					</div>
 				</div>
 
-				<div class="footer__sosial">
+				<div class="footer__social">
 					<div class="footer__social-accept"> Пользовательское соглашение</div>
 					<div class="footer__social-official"> Официальные соцсети: </div>
 					<ul class="footer__social-list">
