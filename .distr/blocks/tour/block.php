@@ -45,14 +45,14 @@
 							<p class="tour__card-description">{{ t.description | default('Краткое описание тура') }}</p>
 							<div class="tour__card-bottom">
 							<a href="product.php" class="tour__card-button">Подробнее</a>
-								<div class="tour__card-price">от{{ (t.price | default(0)) }} ₽</div>
+								<div class="tour__card-price">от {{ (t.price | default(0)) }} ₽</div>
 							</div>
 						</div>
 					</div>
 				{% endfor %}
 			</div>
 			<div class="tour__more" hidden>
-				<button class="tour__more-button">Показать ещё <span class="tour__more-count">( )</span></button>
+				<button class="tour__more-button">Показать ещё (  <span class="tour__more-count"> </span>  ) </button>
 			</div>
 		</div>
 	</div>
