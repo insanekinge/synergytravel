@@ -72,6 +72,7 @@
 		}
 	] %}
 	{% include 'tour/block.php' %}
+	{% include 'form/block.php' %}
 	{% include 'footer/block.php' %}
 {% endblock %}
 
