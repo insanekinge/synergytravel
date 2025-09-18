@@ -1,4 +1,12 @@
-<main class="main">
+<main class="main js-main-background">
+    <div class="main__backgrounds">
+        <div class="main__background main__background--active" data-bg="1"></div>
+        <div class="main__background" data-bg="2"></div>
+        <div class="main__background" data-bg="3"></div>
+        <div class="main__background" data-bg="4"></div>
+        <div class="main__background" data-bg="5"></div>
+        <div class="main__background" data-bg="6"></div>
+    </div>
     <div class="container">
 
         <div class="main__top">
