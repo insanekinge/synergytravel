@@ -50,6 +50,7 @@
 			position: relative;
 			padding-right: 44px;
 				&::after{
+			display: none;
 					content: '';
 					position: absolute;
 					right: 12px;
@@ -63,6 +64,8 @@
 		}
 		&.is-active{
 			.tour__filter-button{
+				background-color: #ed131c;
+				color: #ffffff;
 				&::after{ transform: translate(-50%, -50%) rotate(0deg); }
 			}
 		}
