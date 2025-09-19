@@ -79,11 +79,11 @@
 								<p class="footer__bottom-graph_list-item_time">9:00 - 20:00</p>
 							</li>
 							<li class="footer__bottom-graph_list-item">
-								<p class="footer__bottom-graph_list-item_text">Сб</p>
+								<p class="footer__bottom-graph_list-item_text">Сб: </p>
 								<p class="footer__bottom-graph_list-item_time">9:00 - 20:00</p>
 							</li>
 							<li class="footer__bottom-graph_list-item">
-								<p class="footer__bottom-graph_list-item_text">Вс</p>
+								<p class="footer__bottom-graph_list-item_text">Вс: </p>
 								<p class="footer__bottom-graph_list-item_time">9:00 - 20:00</p>
 							</li>
 						</ul>
