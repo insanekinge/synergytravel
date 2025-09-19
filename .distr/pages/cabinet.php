@@ -6,7 +6,7 @@
 {% block blocks %}
 	{% include 'header/block.php' %}
 	{% include 'cabinet/block.php' %}
-	{% include 'footer/block.php' %}
+	{% include 'footer-register/block.php' %}
 {% endblock %}
 
 {% block popups %}

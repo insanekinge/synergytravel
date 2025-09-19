@@ -14,7 +14,7 @@
                     <img class="about__text-img" src="img/about/logo.svg" alt="Logo"> Synergy<span class="about__text-bold"> Travel — </span> <br>это универсальная платформа <br>для путешественников,<img class="about__text-img" src="img/about/distance.svg" alt="Distance"> стремящихся открыть мир с новой стороны!<img class="about__text-img about__text-img--tail" src="img/about/plane.svg" alt="Plane">
 				</p>
 				<p class="about__description">
-                    Мы предлагаем разнообразные варианты отдыха: от традиционных пляжных курортов до увлекательных экскурсионных программ и уникальных образовательных туров."
+                    Мы предлагаем разнообразные варианты отдыха: от традиционных пляжных курортов до увлекательных экскурсионных программ и уникальных образовательных туров.
 				</p>
 			</div>
 			<form class="about__form" id="aboutForm">
@@ -32,7 +32,7 @@
 				<button type="submit" class="about__form-submit button button--accent">Подобрать тур</button>
 				<label class="about__checkbox">
 					<input type="checkbox" class="about__checkbox-input" name="agreement" required>
-					<span class="about__checkbox-text">Я&nbsp;даю согласие на&nbsp;обработку персональных данных, согласен на&nbsp;получение информационных рассылок от&nbsp;&laquo;Synergy Travel &raquo; и&nbsp;соглашаюсь c&nbsp;политикой конфиденциальности</span>
+					<span class="about__checkbox-text">Я&nbsp;даю согласие на&nbsp;обработку персональных данных, согласен на&nbsp;получение информационных рассылок от&nbsp;&laquo;Synergy Travel&raquo; и&nbsp;соглашаюсь c&nbsp;политикой конфиденциальности</span>
 				</label>
 			</form>
 		</div>

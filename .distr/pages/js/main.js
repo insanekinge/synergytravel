@@ -183,3 +183,40 @@ $(function () {
   }
 
 });
+
+// Background rotator for main block
+(function(){
+	var root = document.querySelector('.js-main-background');
+	if (!root) return;
+	var items = Array.prototype.slice.call(root.querySelectorAll('.main__background'));
+	if (!items.length) return;
+
+	var index = items.findIndex(function(el){ return el.classList.contains('main__background--active'); });
+	if (index < 0) index = 0;
+
+	function getTheme(el, i){
+		// Prefer explicit data-theme on background element
+		var theme = (el.getAttribute('data-theme') || '').toLowerCase();
+		if (theme === 'light' || theme === 'dark') return theme;
+		// Fallback heuristic: alternate by index
+		return (i % 2 === 0) ? 'dark' : 'light';
+	}
+
+	function setActive(i){
+		items.forEach(function(el){ el.classList.remove('main__background--active'); });
+		var active = items[i];
+		if (!active) return;
+		active.classList.add('main__background--active');
+
+		var theme = getTheme(active, i);
+		root.classList.toggle('main--light-bg', theme === 'light');
+		root.classList.toggle('main--dark-bg', theme === 'dark');
+	}
+
+	setActive(index);
+
+	setInterval(function(){
+		index = (index + 1) % items.length;
+		setActive(index);
+	}, 10000);
+})();

@@ -1,87 +1,59 @@
 <main class="register">
     <div class="container">
         <div class="register__wrapper">
+
             <div class="register__header">
-                <h1 class="register__title">Регистрация</h1>
-                <p class="register__subtitle">Создайте аккаунт для доступа к личному кабинету</p>
+                <a href="/" class="register__header-back"><img src="img/register/arrow-back.svg" alt="" class="register__header-back_img">Вернуться на главную</a>
+                <a href="" class="register__header-exit"><img src="img/register/cross.svg" alt="" class="register__header-exit_img"></a>
             </div>
 
             <div class="register__content">
+                <div class="register__content-profile"><img src="img/register/profile.png" alt="" class="register__content-profile_img"></div>
+                <h1 class="register__content-title">Присоединяйтесь к Synergy Travel</h1>
+                <p class="register__content-subtitle">и открывайте мир с новой стороны!</p>
                 <form class="register__form" id="registerForm">
+                    <p class="register__content-login">
+                        <a href="#" class="register__content-login_reg">Регистрация</a>
+                        <a href="#" class="register__content-login_enter">Войти</a>
+                    </p>
                     <div class="register__form-row">
                         <div class="register__form-group">
-                            <label class="register__form-label">Имя *</label>
-                            <input type="text" class="register__form-input" name="firstName" required>
-                            <div class="register__form-error"></div>
-                        </div>
-                        <div class="register__form-group">
-                            <label class="register__form-label">Фамилия *</label>
-                            <input type="text" class="register__form-input" name="lastName" required>
+                            <input type="text" class="register__form-input" name="firstName" placeholder="Имя" required>
                             <div class="register__form-error"></div>
                         </div>
                     </div>
 
                     <div class="register__form-group">
-                        <label class="register__form-label">Email *</label>
-                        <input type="email" class="register__form-input" name="email" required>
+                        <input type="email" class="register__form-input" name="email" placeholder="Email" required>
                         <div class="register__form-error"></div>
                     </div>
 
                     <div class="register__form-group">
-                        <label class="register__form-label">Телефон *</label>
-                        <input type="tel" class="register__form-input" name="phone" placeholder="+7 (999) 123-45-67" required>
+                        <input type="password" class="register__form-input" name="password" placeholder="Пароль" required>
                         <div class="register__form-error"></div>
                     </div>
 
                     <div class="register__form-group">
-                        <label class="register__form-label">Дата рождения</label>
-                        <input type="date" class="register__form-input" name="birthDate">
-                    </div>
-
-                    <div class="register__form-group">
-                        <label class="register__form-label">Пароль *</label>
-                        <input type="password" class="register__form-input" name="password" required>
+                        <input type="password" class="register__form-input" name="confirmPassword" placeholder="Подтвердите пароль" required>
                         <div class="register__form-error"></div>
-                    </div>
-
-                    <div class="register__form-group">
-                        <label class="register__form-label">Подтвердите пароль *</label>
-                        <input type="password" class="register__form-input" name="confirmPassword" required>
-                        <div class="register__form-error"></div>
-                    </div>
-
-                    <div class="register__form-group">
-                        <label class="register__checkbox">
-                            <input type="checkbox" class="register__checkbox-input" name="agreement" required>
-                            <span class="register__checkbox-text">
-                                Я согласен с <a href="#" class="register__link">пользовательским соглашением</a> 
-                                и <a href="#" class="register__link">политикой конфиденциальности</a>
-                            </span>
-                        </label>
-                        <div class="register__form-error"></div>
-                    </div>
-
-                    <div class="register__form-group">
-                        <label class="register__checkbox">
-                            <input type="checkbox" class="register__checkbox-input" name="newsletter">
-                            <span class="register__checkbox-text">
-                                Подписаться на рассылку новостей и специальных предложений
-                            </span>
-                        </label>
                     </div>
 
                     <button type="submit" class="register__form-submit button button--accent">
                         Зарегистрироваться
                     </button>
+                    <div class="register__form-group">
+                        <label class="register__checkbox">
+                            <input type="checkbox" class="register__checkbox-input" name="agreement" required>
+                            <span class="register__checkbox-text">
+                            Я&nbsp;даю согласие на&nbsp;обработку персональных данных, согласен на&nbsp;получение информационных рассылок от&nbsp;&laquo;Synergy Travel &raquo; и&nbsp;соглашаюсь c&nbsp;политикой конфиденциальности
+                            </span>
+                        </label>
+                        <div class="register__form-error"></div>
+                    </div>
                 </form>
-
-                <div class="register__footer">
-                    <p class="register__login-text">
-                        Уже есть аккаунт? 
-                        <a href="#" class="register__login-link">Войти</a>
-                    </p>
-                </div>
+                    
             </div>
+
         </div>
     </div>
 </main>

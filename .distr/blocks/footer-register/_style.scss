@@ -1,0 +1,44 @@
+.footer--register{
+	padding: 20px 0;
+	background: transparent;
+	color: #fff;
+	.footer{
+		&__social{
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: center;
+			gap: 15px;
+
+			&-accept{
+				font-size: 18px;
+				line-height: 90%;
+			}
+			&-rights{
+				font-size: 18px;
+				line-height: 90%;
+			}
+			&-list{
+				display: flex;
+				flex-direction: row;
+				gap: 12px;
+				align-items: center;
+				&_official{
+					font-size: 18px;
+					line-height: 90%;
+				}
+
+				&_item{
+
+					&-img{
+
+						width: 24px;
+						height: 24px;
+						display: block;
+					}
+				}
+			}
+		}
+	}
+	
+}
