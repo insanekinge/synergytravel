@@ -1,4 +1,4 @@
-<section class="tour">
+<section class="tour" id="tour">
 	<div class="container">
 		<div class="tour__inner">
 			{% if (tours | default([])) | length == 0 %}
