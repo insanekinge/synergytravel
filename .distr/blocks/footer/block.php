@@ -1,4 +1,4 @@
-<footer class="footer">
+<footer class="footer" id="footer">
 	<div class="container">
 		<div class="footer__inner">
 
@@ -93,14 +93,14 @@
 				<div class="footer__social">
 					<div class="footer__social-accept"> Пользовательское соглашение</div>
 					<div class="footer__social-official"> Официальные соцсети: </div>
-					<ul class="footer__social-list">
-						<li class="footer__social-list_item"><img src="../img/footer/tg.svg" alt="Telegram" class="footer__social-list_item-img"></li>
-						<li class="footer__social-list_item"><img src="../img/footer/t.svg" alt="T" class="footer__social-list_item-img"></li>
-						<li class="footer__social-list_item"><img src="../img/footer/vk.svg" alt="VK" class="footer__social-list_item-img"></li>
-					</ul>
+                    <ul class="footer__social-list">
+                        <li class="footer__social-list_item"><img src="img/footer/tg.svg" alt="Telegram" class="footer__social-list_item-img"></li>
+                        <li class="footer__social-list_item"><img src="img/footer/t.svg" alt="T" class="footer__social-list_item-img"></li>
+                        <li class="footer__social-list_item"><img src="img/footer/vk.svg" alt="VK" class="footer__social-list_item-img"></li>
+                    </ul>
 					<div class="footer__social-up">
-						<a href="#" class="footer__social-up_link">
-							<img src="../img/footer/link.svg" alt="Наверх" class="footer__social-up_link-img">
+                        <a href="#" class="footer__social-up_link">
+                            <img src="img/footer/link.svg" alt="Наверх" class="footer__social-up_link-img">
 						</a>
 					</div>
 				</div>

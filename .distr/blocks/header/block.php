@@ -1,15 +1,15 @@
 <header class="header">
         <div class="header__nav-wrap">
             <div class="container">
-                <div class="header__logo">
+                <a href="/" class="header__logo">
                     <img class="header__logo-img" src="img/header/logo.svg" alt="logo">
-                </div>
+                </a>
 
                 <div class="header__menu">
-                    <a href="#" class="header__menu-link">О нас</a>
-                    <a href="#" class="header__menu-link">Туры</a>
-                    <a href="#" class="header__menu-link">Контакты</a>
-                    <a href="#" class="header__menu-link">Фотографии</a>
+                    <a href="/#about" class="header__menu-link">О нас</a>
+                    <a href="/#tour" class="header__menu-link">Туры</a>
+                    <a href="/#footer" class="header__menu-link">Контакты</a>
+                    <a href="/#offer" class="header__menu-link">Фотографии</a>
                 </div>
 
                 <div class="header__sidebar">
