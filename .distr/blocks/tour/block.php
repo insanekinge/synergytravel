@@ -44,7 +44,7 @@
 							<div class="tour__card-title">{{ t.title | default('Название тура') }}</div>
 							<p class="tour__card-description">{{ t.description | default('Краткое описание тура') }}</p>
 							<div class="tour__card-bottom">
-							<a href="product.php" class="tour__card-button">Подробнее</a>
+							<a href="{{ (t.slug | default('product')) }}.php" class="tour__card-button">Подробнее</a>
 								<div class="tour__card-price">от {{ (t.price | default(0)) }} ₽</div>
 							</div>
 						</div>
