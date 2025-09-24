@@ -1,34 +1,41 @@
 <?php
-// Expect $tour and $tours to be provided by the including page (e.g., public/product.php)
-// Fallback: load data if not present
-if (!isset($tours) || !is_array($tours)) {
-    $tours = [];
-    // Try multiple data sources
-    $dataPaths = [
-        $_SERVER['DOCUMENT_ROOT'] . '/data/tours.json',
-        dirname(dirname(__DIR__)) . '/blocks/tour/tours-data.json'
-    ];
+// Load tour data for Kazan
+$tourSlug = 'kazan';
+$tours = [];
+$tour = null;
+
+// Load tours data
+$dataPath = __DIR__ . '/blocks/tour/tours-data.json';
+if (file_exists($dataPath)) {
+    $json = file_get_contents($dataPath);
+    $tours = json_decode($json, true) ?: [];
     
-    foreach ($dataPaths as $dataPath) {
-        if (file_exists($dataPath)) {
-            $json = file_get_contents($dataPath);
-            $tours = json_decode($json, true) ?: [];
+    // Find tour by slug
+    foreach ($tours as $t) {
+        if (isset($t['slug']) && $t['slug'] === $tourSlug) {
+            $tour = $t;
             break;
         }
     }
 }
 
-$currentTour = isset($tour) && is_array($tour) ? $tour : null;
+$title = $tour ? $tour['title'] . ' - Synergy Travel' : 'Тур не найден';
+$description = $tour ? $tour['description'] : 'Страница тура не найдена';
 ?>
 
-<main class="cabinet cabinet--product">
+{% extends "default.php" %}
+
+{% block blocks %}
+  {% include 'header/block.php' %}
+  
+  <main class="cabinet cabinet--product">
     <div class="container">
 
         <div class="cabinet__top">
             <a href="/" class="cabinet__top-back"><img src="img/register/arrow-back.svg" alt="" class="cabinet__top-back_img">Вернуться на главную</a>
 
             <h1 class="cabinet__top-title">
-                <?= htmlspecialchars($currentTour['title'] ?? 'Тур') ?>
+                <?= htmlspecialchars($tour ? $tour['title'] : 'Тур не найден') ?>
             </h1>
         </div>
 
@@ -52,7 +59,6 @@ $currentTour = isset($tour) && is_array($tour) ? $tour : null;
                         </ul>
                     </div>
 
-
                 </div>
 
                 <div class="cabinet__main-side_question">
@@ -75,27 +81,30 @@ $currentTour = isset($tour) && is_array($tour) ? $tour : null;
                 </div>
 
                 <div class="cabinet__main-tour_list">
-                    <?php if ($currentTour): ?>
-                        <?php if (!empty($currentTour['image'])): ?>
-                            <div style="width:100%;height:240px;border-radius:30px;background:#f5f5f7;background-image:url('<?= htmlspecialchars($currentTour['image']) ?>');background-size:cover;background-position:center;margin-bottom:20px;"></div>
+                    <?php if ($tour): ?>
+                        <?php if (!empty($tour['image'])): ?>
+                            <div style="width:100%;height:240px;border-radius:30px;background:#f5f5f7;background-image:url('<?= htmlspecialchars($tour['image']) ?>');background-size:cover;background-position:center;margin-bottom:20px;"></div>
                         <?php endif; ?>
-                        <?php if (!empty($currentTour['description'])): ?>
-                            <p style="font-size:18px;line-height:150%;margin-bottom:16px;"><?= htmlspecialchars($currentTour['description']) ?></p>
+                        
+                        <?php if (!empty($tour['description'])): ?>
+                            <p style="font-size:18px;line-height:150%;margin-bottom:16px;"><?= htmlspecialchars($tour['description']) ?></p>
                         <?php endif; ?>
+                        
                         <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
-                            <?php if (!empty($currentTour['type'])): ?>
-                                <div style="background:#f3f3f6;border-radius:12px;padding:10px 14px;">Тип: <?= htmlspecialchars($currentTour['type']) ?></div>
+                            <?php if (!empty($tour['type'])): ?>
+                                <div style="background:#f3f3f6;border-radius:12px;padding:10px 14px;">Тип: <?= htmlspecialchars($tour['type']) ?></div>
                             <?php endif; ?>
-                            <?php if (!empty($currentTour['duration'])): ?>
-                                <div style="background:#f3f3f6;border-radius:12px;padding:10px 14px;">Длительность: <?= htmlspecialchars($currentTour['duration']) ?></div>
+                            <?php if (!empty($tour['duration'])): ?>
+                                <div style="background:#f3f3f6;border-radius:12px;padding:10px 14px;">Длительность: <?= htmlspecialchars($tour['duration']) ?></div>
                             <?php endif; ?>
-                            <?php if (isset($currentTour['price'])): ?>
-                                <div style="background:#f3f3f6;border-radius:12px;padding:10px 14px;">Цена: <?= number_format((float)$currentTour['price'], 0, '.', ' ') ?> ₽</div>
+                            <?php if (isset($tour['price'])): ?>
+                                <div style="background:#f3f3f6;border-radius:12px;padding:10px 14px;">Цена: <?= number_format((float)$tour['price'], 0, '.', ' ') ?> ₽</div>
                             <?php endif; ?>
                         </div>
-                        <?php if (!empty($currentTour['details']) && is_array($currentTour['details'])): ?>
+                        
+                        <?php if (!empty($tour['details']) && is_array($tour['details'])): ?>
                             <ul style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:0;padding:0;list-style:none;">
-                                <?php foreach ($currentTour['details'] as $detail): ?>
+                                <?php foreach ($tour['details'] as $detail): ?>
                                     <li style="background:#f8f8fa;border-radius:12px;padding:12px 14px;font-size:16px;"><?= htmlspecialchars($detail) ?></li>
                                 <?php endforeach; ?>
                             </ul>
@@ -109,5 +118,11 @@ $currentTour = isset($tour) && is_array($tour) ? $tour : null;
         </div>
 
     </div>
-</main>
+  </main>
+  
+  {% include 'footer/block.php' %}
+{% endblock %}
 
+{% block js %}
+  <script src="js/product.js"></script>
+{% endblock %}

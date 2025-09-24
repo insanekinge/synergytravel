@@ -1,0 +1,38 @@
+{% extends "default.php" %}
+
+{% set slug = slug | default('') %}
+{% import 'tour/data.njk' as tourdata %}
+{% set tours = tourdata.getTours() %}
+
+{# Find current tour by slug #}
+{% set currentTour = null %}
+{% for tour in tours %}
+  {% if tour.slug == slug %}
+    {% set currentTour = tour %}
+  {% endif %}
+{% endfor %}
+
+{% if currentTour %}
+  {% set title = currentTour.title %}
+  {% set description = currentTour.description %}
+{% else %}
+  {% set title = "Тур не найден - Synergy Travel" %}
+  {% set description = "Страница тура не найдена" %}
+{% endif %}
+
+{% block blocks %}
+  {% include 'header/block.php' %}
+  
+  {# Pass data to product block via PHP variables #}
+  <?php 
+    $tours = {{ tours | dump | safe }};
+    $tour = {{ currentTour | dump | safe }};
+  ?>
+  
+  {% include 'product/block.php' %}
+  {% include 'footer/block.php' %}
+{% endblock %}
+
+{% block js %}
+  <script src="js/product.js"></script>
+{% endblock %}
